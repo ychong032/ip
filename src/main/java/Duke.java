@@ -1,5 +1,7 @@
+import java.util.Objects;
 import java.util.Scanner;
 public class Duke {
+    static int taskCount = 0;
 
     public static void main(String[] args) {
         //Opening message
@@ -32,7 +34,7 @@ public class Duke {
     }
 
     public static void addToList() {
-        String[] list =  new String[100];
+        Task[] list =  new Task[100];
         int listIndex = 0;
         Scanner sc = new Scanner(System.in);
         String message = sc.nextLine();
@@ -42,21 +44,32 @@ public class Duke {
                 message = sc.nextLine();
                 continue;
             }
-            list[listIndex] = String.format("%d. %s", listIndex + 1, message);
+            if (message.contains("done")) {
+                int taskCompleted = Integer.parseInt(message.substring(5));
+                list[taskCompleted-1].markAsDone();
+                printDivider();
+                System.out.println("\tNice! I've marked this task as done:");
+                System.out.printf("\t[%s] %s%n", list[taskCompleted-1].getStatusIcon(), list[taskCompleted-1].description);
+                printDivider();
+                message = sc.nextLine();
+                continue;
+            }
+            list[listIndex] = new Task(message);
             printDivider();
-            System.out.printf("\tadded: %s%n", message);
+            System.out.printf("\tadded: %s%n", list[listIndex].description);
             printDivider();
             listIndex++;
+            taskCount++;
             message = sc.nextLine();
         }
     }
 
-    public static void displayList(String[] list) {
+    public static void displayList(Task[] list) {
         printDivider();
-        for (String item : list) {
-            if (item != null) {
-                System.out.println("\t" + item);
-            }
+        System.out.println("\tHere are the tasks in your list: ");
+        for (int i = 0; i < taskCount; i++) {
+            System.out.printf("\t%d.[%s] %s", i+1, list[i].getStatusIcon(), list[i].description);
+            System.out.print('\n');
         }
         printDivider();
     }

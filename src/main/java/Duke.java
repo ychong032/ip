@@ -1,15 +1,22 @@
 import java.util.Scanner;
 public class Duke {
     public static void main(String[] args) {
+        //Opening message
         printDivider();
-        System.out.printf("\tHello! I'm Duke\n");
-        System.out.printf("\tWhat can I do for you?\n");
+        System.out.println("\tHello! I'm Duke");
+        System.out.println("\tWhat can I do for you?");
         printDivider();
+
         loopEcho();
+
+        //Closing message
+        printDivider();
+        System.out.println("\tBye. Hope to see you again soon!");
+        printDivider();
     }
 
     public static void printDivider() {
-        System.out.printf("\t-------------------------------------\n");
+        System.out.println("\t-------------------------------------");
     }
 
     public static void loopEcho() {
@@ -21,8 +28,5 @@ public class Duke {
             printDivider();
             message = sc.nextLine();
         }
-        printDivider();
-        System.out.printf("\tBye. Hope to see you again soon!\n");
-        printDivider();
     }
 }

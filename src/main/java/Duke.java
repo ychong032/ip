@@ -1,4 +1,3 @@
-import java.util.Objects;
 import java.util.Scanner;
 public class Duke {
     static int taskCount = 0;
@@ -6,20 +5,20 @@ public class Duke {
     public static void main(String[] args) {
         //Opening message
         printDivider();
-        System.out.println("\tHello! I'm Duke");
-        System.out.println("\tWhat can I do for you?");
+        System.out.println("\tGreetings, sir. My name is Duke");
+        System.out.println("\tHow may I assist you today, sir?");
         printDivider();
 
         addToList();
 
         //Closing message
         printDivider();
-        System.out.println("\tBye. Hope to see you again soon!");
+        System.out.println("\tAlways a pleasure, sir. Do come back soon.");
         printDivider();
     }
 
     public static void printDivider() {
-        System.out.println("\t-------------------------------------");
+        System.out.println("\t+--------------------------------------------------------+");
     }
 
     public static void loopEcho() {
@@ -45,11 +44,12 @@ public class Duke {
                 continue;
             }
             if (message.contains("done")) {
-                int taskCompleted = Integer.parseInt(message.substring(5));
-                list[taskCompleted-1].markAsDone();
+                int taskNumber = Integer.parseInt(message.substring(5));
+                Task taskDone = list[taskNumber-1];
+                taskDone.markAsDone();
                 printDivider();
-                System.out.println("\tNice! I've marked this task as done:");
-                System.out.printf("\t[%s] %s%n", list[taskCompleted-1].getStatusIcon(), list[taskCompleted-1].description);
+                System.out.println("\tVery good, sir. Excellent work accomplishing your task:");
+                System.out.printf("\t[%s] %s%n", taskDone.getStatusIcon(), taskDone.description);
                 printDivider();
                 message = sc.nextLine();
                 continue;
@@ -66,7 +66,7 @@ public class Duke {
 
     public static void displayList(Task[] list) {
         printDivider();
-        System.out.println("\tHere are the tasks in your list: ");
+        System.out.println("\tHere are your tasks for this evening, sir: ");
         for (int i = 0; i < taskCount; i++) {
             System.out.printf("\t%d.[%s] %s", i+1, list[i].getStatusIcon(), list[i].description);
             System.out.print('\n');

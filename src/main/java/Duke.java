@@ -1,45 +1,31 @@
 import java.util.Scanner;
 public class Duke {
-    private static final int MAX_TASK_LENGTH = 100;
-    private static int taskCount = 0;
+    static int taskCount = 0;
 
     public static void main(String[] args) {
-        //Print logo and opening message
-        printLogo();
-        printDivider();
-        printGreeting();
-        printDivider();
-
-        addToList();
-
-        //Print closing message
-        printDivider();
-        printFarewell();
-        printDivider();
-    }
-
-    public static void printFarewell() {
-        System.out.println("\tAlways a pleasure, sir. Do come back soon.");
-    }
-
-    public static void printLogo() {
         String logo = " ____        _        \n"
                 + "|  _ \\ _   _| | _____ \n"
                 + "| | | | | | | |/ / _ \\\n"
                 + "| |_| | |_| |   <  __/\n"
                 + "|____/ \\__,_|_|\\_\\___|\n";
         System.out.println("Hello from\n" + logo);
-    }
-
-    public static void printGreeting() {
+        //Opening message
+        printDivider();
         System.out.println("\tGreetings, sir. My name is Duke");
         System.out.println("\tHow may I assist you today, sir?");
+        printDivider();
+
+        addToList();
+
+        //Closing message
+        printDivider();
+        System.out.println("\tAlways a pleasure, sir. Do come back soon.");
+        printDivider();
     }
 
     public static void printDivider() {
         System.out.println("\t+--------------------------------------------------------+");
     }
-
 
     public static void loopEcho() {
         Scanner sc = new Scanner(System.in);
@@ -53,7 +39,7 @@ public class Duke {
     }
 
     public static void addToList() {
-        Task[] taskList =  new Task[MAX_TASK_LENGTH];
+        Task[] taskList =  new Task[100];
         int listIndex = 0;
         Scanner sc = new Scanner(System.in);
         String userInput = sc.nextLine();
@@ -64,7 +50,7 @@ public class Duke {
                 continue;
             }
             if (userInput.trim().toLowerCase().contains("done")) {
-                int taskNumber = Integer.parseInt(userInput.substring(5)); //Magic number!
+                int taskNumber = Integer.parseInt(userInput.substring(5));
                 Task taskDone = taskList[taskNumber-1];
                 taskDone.markAsDone();
                 printDivider();
@@ -86,14 +72,10 @@ public class Duke {
 
     public static void displayList(Task[] taskList) {
         printDivider();
-        if (taskList[0] == null) {
-            System.out.println("\tYou have no tasks recorded this evening, sir.");
-        } else {
-            System.out.println("\tHere are your tasks for this evening, sir: ");
-            for (int i = 0; i < taskCount; i++) {
-                System.out.printf("\t%d.[%s] %s", i + 1, taskList[i].getStatusIcon(), taskList[i].description);
-                System.out.print('\n');
-            }
+        System.out.println("\tHere are your tasks for this evening, sir: ");
+        for (int i = 0; i < taskCount; i++) {
+            System.out.printf("\t%d.[%s] %s", i+1, taskList[i].getStatusIcon(), taskList[i].description);
+            System.out.print('\n');
         }
         printDivider();
     }

@@ -6,41 +6,14 @@ public class Duke {
     public static void main(String[] args) {
         //Print logo and opening message
         printLogo();
-        printDivider();
         printGreeting();
-        printDivider();
 
         //Receive user input and execute corresponding functions
         getUserInput();
 
         //Print closing message
-        printDivider();
         printFarewell();
-        printDivider();
     }
-
-    public static void printFarewell() {
-        System.out.println("\tAlways a pleasure, sir. Do come back soon.");
-    }
-
-    public static void printLogo() {
-        String logo = " ____        _        \n"
-                + "|  _ \\ _   _| | _____ \n"
-                + "| | | | | | | |/ / _ \\\n"
-                + "| |_| | |_| |   <  __/\n"
-                + "|____/ \\__,_|_|\\_\\___|\n";
-        System.out.println("Hello from\n" + logo);
-    }
-
-    public static void printGreeting() {
-        System.out.println("\tGreetings, sir. My name is Duke");
-        System.out.println("\tHow may I assist you today, sir?");
-    }
-
-    public static void printDivider() {
-        System.out.println("\t+------------------------------------------------------------------+");
-    }
-
 
     public static void loopEcho() {
         Scanner sc = new Scanner(System.in);
@@ -54,26 +27,15 @@ public class Duke {
     }
 
     public static void getUserInput() {
-        Task[] taskList =  new Task[MAX_TASK_LENGTH];
+        Task[] taskList = new Task[MAX_TASK_LENGTH];
         int listIndex = 0;
         Scanner sc = new Scanner(System.in);
         String userInput = sc.nextLine();
         while (!userInput.trim().toLowerCase().equals("bye")) {
             if (userInput.trim().toLowerCase().equals("list")) {
                 displayList(taskList);
-                userInput = sc.nextLine();
-                continue;
-            }
-            if (userInput.trim().toLowerCase().contains("done")) {
-                String replacedInput = userInput.trim().toLowerCase().replace("done", "");
-                int taskNumber = Integer.parseInt(replacedInput.trim().substring(0, 1));
-                Task taskDone = taskList[taskNumber-1];
-                taskDone.markAsDone();
-                printDivider();
-                System.out.println("\tVery good, sir. Excellent work accomplishing your task:");
-                System.out.print('\t');
-                System.out.println(taskDone);
-                printDivider();
+            } else if (userInput.trim().toLowerCase().contains("done")) {
+                markTaskDone(taskList, userInput);
             } else if (userInput.trim().toLowerCase().contains("todo")) {
                 listIndex = addToList(taskList, listIndex, userInput, "todo");
             } else if (userInput.trim().toLowerCase().contains("deadline")) {
@@ -81,13 +43,26 @@ public class Duke {
             } else if (userInput.trim().toLowerCase().contains("event")) {
                 listIndex = addToList(taskList, listIndex, userInput, "event");
             } else {
-                printDivider();
-                System.out.println("\tI'm afraid I don't understand, sir. Please preface your tasks " +
-                        "\n\twith 'todo', 'deadline', or 'event' to add them to your list.");
-                printDivider();
+                printErrorMessage();
             }
             userInput = sc.nextLine();
         }
+    }
+
+    public static void markTaskDone(Task[] taskList, String userInput) {
+        Task taskDone = getCompletedTask(taskList, userInput);
+        taskDone.markAsDone();
+        printDivider();
+        System.out.println("\tVery good, sir. Excellent work accomplishing your task:");
+        System.out.print('\t');
+        System.out.println(taskDone);
+        printDivider();
+    }
+
+    public static Task getCompletedTask(Task[] taskList, String userInput) {
+        String replacedInput = userInput.trim().toLowerCase().replace("done", "");
+        int taskNumber = Integer.parseInt(replacedInput.trim().substring(0, 1));
+        return taskList[taskNumber-1];
     }
 
     public static int addToList(Task[] taskList, int listIndex, String userInput, String taskType) {
@@ -135,6 +110,39 @@ public class Duke {
                 System.out.println(taskList[i]);
             }
         }
+        printDivider();
+    }
+
+    public static void printFarewell() {
+        printDivider();
+        System.out.println("\tAlways a pleasure, sir. Do come back soon.");
+        printDivider();
+    }
+
+    public static void printLogo() {
+        String logo = " ____        _        \n"
+                + "|  _ \\ _   _| | _____ \n"
+                + "| | | | | | | |/ / _ \\\n"
+                + "| |_| | |_| |   <  __/\n"
+                + "|____/ \\__,_|_|\\_\\___|\n";
+        System.out.println("Hello from\n" + logo);
+    }
+
+    public static void printGreeting() {
+        printDivider();
+        System.out.println("\tGreetings, sir. My name is Duke");
+        System.out.println("\tHow may I assist you today, sir?");
+        printDivider();
+    }
+
+    public static void printDivider() {
+        System.out.println("\t+------------------------------------------------------------------+");
+    }
+
+    public static void printErrorMessage() {
+        printDivider();
+        System.out.println("\tI'm afraid I don't understand, sir. Please preface your tasks " +
+                "\n\twith 'todo', 'deadline', or 'event' to add them to your list.");
         printDivider();
     }
 }

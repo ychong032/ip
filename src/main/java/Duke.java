@@ -39,25 +39,49 @@ public class Duke {
     }
 
     public static void markTaskDone(Task[] taskList, String userInput) {
-        Task taskDone = getCompletedTask(taskList, userInput);
-        taskDone.markAsDone();
+        try {
+            Task taskDone = getCompletedTask(taskList, userInput);
+            taskDone.markAsDone();
+            printTaskDone(taskDone);
+        } catch (NumberFormatException e) {
+            printNFEMessage();
+        } catch (NullPointerException e) {
+            printNPEMessage();
+        }
+    }
+
+    public static void printNPEMessage() {
         printDivider();
-        String clapEmoji = new String(Character.toChars(0x1f44f));
-        System.out.println("\t" + clapEmoji + " Very good, sir. Excellent work accomplishing your task:");
+        System.out.println("\t" + Emojis.SAD_EMOJI + " That task number is not in your list, sir. Please select an"
+                + "\n\texisting task number to mark it as completed.");
+        printDivider();
+    }
+
+    public static void printNFEMessage() {
+        printDivider();
+        System.out.println("\t" + Emojis.SAD_EMOJI + " I don't recognise that task number, sir. Please enter" +
+                "\n\ta valid task number after the 'done'.");
+        printDivider();
+    }
+
+    public static void printTaskDone(Task taskDone) {
+        printDivider();
+        System.out.println("\t" + Emojis.CLAP_EMOJI + " Very good, sir. Excellent work accomplishing your task:");
         System.out.print('\t');
         System.out.println(taskDone);
         printDivider();
     }
 
-    public static Task getCompletedTask(Task[] taskList, String userInput) {
+    public static Task getCompletedTask(Task[] taskList, String userInput) throws NumberFormatException,
+            NullPointerException {
         String replacedInput = userInput.trim().toLowerCase().replace("done", "");
-        int taskNumber = Integer.parseInt(replacedInput.trim().substring(0, 1));
+        int taskNumber = Integer.parseInt(replacedInput.trim());
         return taskList[taskNumber-1];
     }
 
     public static void addToList(Task[] taskList, String userInput, String taskType) {
         String replacedInput = userInput.replaceFirst("(?i)" + taskType, "").trim();
-        if (isValidInput(replacedInput, taskType)) {
+        try {
             switch (taskType) {
             case "todo":
                 addToDoToList(taskList, replacedInput);
@@ -69,26 +93,50 @@ public class Duke {
                 addEventToList(taskList, replacedInput);
                 break;
             }
+        } catch (StringIndexOutOfBoundsException e) {
+            printSIOOBEMessage();
+        } catch (DukeException e) {
+            printDEMessage(taskType);
         }
+    }
+
+    public static void printDEMessage(String taskType) {
+        printDivider();
+        System.out.println("\t" + Emojis.SAD_EMOJI + " Apologies, sir. The description of your " + taskType
+                + " cannot be empty.");
+        printDivider();
+    }
+
+    public static void printSIOOBEMessage() {
+        printDivider();
+        System.out.println("\t" + Emojis.SAD_EMOJI + " Please ensure that your deadline or event is followed by"
+                + "\n\t'/by' or '/at', respectively.");
+        printDivider();
     }
 
     public static void printAddedTask(Task[] taskList) {
         printDivider();
-        String okayEmoji = new String(Character.toChars(0x1f44c));
-        System.out.println("\t" + okayEmoji + " Understood, sir. I've added this task: ");
+        System.out.println("\t" + Emojis.OKAY_EMOJI + " Understood, sir. I've added this task: ");
         System.out.println("\t\t" + taskList[listIndex]);
         System.out.printf("\tYou currently have %d task(s) in your list, sir.%n", taskCount);
         printDivider();
     }
 
-    public static void addToDoToList(Task[] taskList, String replacedInput) {
+    public static void addToDoToList(Task[] taskList, String replacedInput) throws DukeException {
+        if (replacedInput.isBlank()) {
+            throw new DukeException();
+        }
         taskList[listIndex] = new ToDo(replacedInput);
         taskCount++;
         printAddedTask(taskList);
         listIndex++;
     }
 
-    public static void addDeadlineToList(Task[] taskList, String replacedInput) {
+    public static void addDeadlineToList(Task[] taskList, String replacedInput) throws StringIndexOutOfBoundsException,
+            DukeException {
+        if (replacedInput.isBlank()) {
+            throw new DukeException();
+        }
         int byIndex = replacedInput.toLowerCase().indexOf("/by");
         String by = replacedInput.substring(byIndex + 3);
         String description = replacedInput.substring(0, byIndex);
@@ -98,7 +146,11 @@ public class Duke {
         listIndex++;
     }
 
-    public static void addEventToList(Task[] taskList, String replacedInput) {
+    public static void addEventToList(Task[] taskList, String replacedInput) throws StringIndexOutOfBoundsException,
+            DukeException {
+        if (replacedInput.isBlank()) {
+            throw new DukeException();
+        }
         int atIndex = replacedInput.toLowerCase().indexOf("/at");
         String at = replacedInput.substring(atIndex + 3);
         String description = replacedInput.substring(0, atIndex);
@@ -108,25 +160,13 @@ public class Duke {
         listIndex++;
     }
 
-    public static boolean isValidInput(String replacedInput, String taskType) {
-        if (replacedInput.isBlank()) {
-            printDivider();
-            String sadEmoji = new String(Character.toChars(0x1f61e));
-            System.out.println("\t" + sadEmoji + " Apologies, sir. The description of your " + taskType
-                    + " cannot be empty.");
-            printDivider();
-            return false;
-        }
-        return true;
-    }
 
     public static void displayList(Task[] taskList) {
         printDivider();
         if (taskList[0] == null) {
-            String hurrayEmoji = new String(Character.toChars(0x1f64c));
-            System.out.println("\t" + hurrayEmoji + " You have no tasks recorded, sir. Huzzah!");
+            System.out.println("\t" + Emojis.HURRAY_EMOJI + " You have no tasks recorded, sir. Huzzah!");
         } else {
-            System.out.println("\tHere are your tasks, sir: ");
+            System.out.println("\t" + Emojis.LIST_EMOJI + " Here are your tasks, sir: ");
             for (int i = 0; i < taskCount; i++) {
                 System.out.printf("\t%d.", i + 1);
                 System.out.println(taskList[i]);
@@ -137,8 +177,7 @@ public class Duke {
 
     public static void printFarewell() {
         printDivider();
-        String smileEmoji = new String(Character.toChars(0x1f600));
-        System.out.println("\t" + smileEmoji + " Always a pleasure, sir. Do come back soon.");
+        System.out.println("\t" + Emojis.SMILE_EMOJI + " Always a pleasure, sir. Do come back soon.");
         printDivider();
     }
 
@@ -153,8 +192,7 @@ public class Duke {
 
     public static void printGreeting() {
         printDivider();
-        String waveEmoji = new String(Character.toChars(0x1f64b));
-        System.out.println("\t" + waveEmoji + " Greetings, sir. My name is Duke");
+        System.out.println("\t" + Emojis.WAVE_EMOJI + " Greetings, sir. My name is Duke");
         System.out.println("\tHow may I assist you today, sir?");
         printDivider();
     }
@@ -165,8 +203,7 @@ public class Duke {
 
     public static void printErrorMessage() {
         printDivider();
-        String confusedEmoji = new String(Character.toChars(0x1f615));
-        System.out.println("\t" + confusedEmoji + " I'm afraid I don't understand, sir. Please preface " +
+        System.out.println("\t" + Emojis.CONFUSED_EMOJI + " I'm afraid I don't understand, sir. Please preface " +
                 "your tasks " + "\n\twith 'todo', 'deadline', or 'event' to add them to your list.");
         printDivider();
     }

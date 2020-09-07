@@ -1,4 +1,11 @@
+package duke;
+import static duke.aesthetics.Emojis.*;
+import duke.task.Task;
+import duke.task.Deadline;
+import duke.task.ToDo;
+import duke.task.Event;
 import java.util.Scanner;
+
 public class Duke {
     private static final int MAX_TASK_LENGTH = 100;
     private static int taskCount = 0;
@@ -52,21 +59,21 @@ public class Duke {
 
     public static void printNPEMessage() {
         printDivider();
-        System.out.println("\t" + Emojis.SAD_EMOJI + " That task number is not in your list, sir. Please select an"
+        System.out.println("\t" + SAD_EMOJI + " That task number is not in your list, sir. Please select an"
                 + "\n\texisting task number to mark it as completed.");
         printDivider();
     }
 
     public static void printNFEMessage() {
         printDivider();
-        System.out.println("\t" + Emojis.SAD_EMOJI + " I don't recognise that task number, sir. Please enter" +
+        System.out.println("\t" + SAD_EMOJI + " I don't recognise that task number, sir. Please enter" +
                 "\n\ta valid task number after the 'done'.");
         printDivider();
     }
 
     public static void printTaskDone(Task taskDone) {
         printDivider();
-        System.out.println("\t" + Emojis.CLAP_EMOJI + " Very good, sir. Excellent work accomplishing your task:");
+        System.out.println("\t" + CLAP_EMOJI + " Very good, sir. Excellent work accomplishing your task:");
         System.out.print('\t');
         System.out.println(taskDone);
         printDivider();
@@ -102,21 +109,21 @@ public class Duke {
 
     public static void printDEMessage(String taskType) {
         printDivider();
-        System.out.println("\t" + Emojis.SAD_EMOJI + " Apologies, sir. The description of your " + taskType
+        System.out.println("\t" + SAD_EMOJI + " Apologies, sir. The description of your " + taskType
                 + " cannot be empty.");
         printDivider();
     }
 
     public static void printSIOOBEMessage() {
         printDivider();
-        System.out.println("\t" + Emojis.SAD_EMOJI + " Please ensure that your deadline or event is followed by"
+        System.out.println("\t" + SAD_EMOJI + " Please ensure that your deadline or event is followed by"
                 + "\n\t'/by' or '/at', respectively.");
         printDivider();
     }
 
     public static void printAddedTask(Task[] taskList) {
         printDivider();
-        System.out.println("\t" + Emojis.OKAY_EMOJI + " Understood, sir. I've added this task: ");
+        System.out.println("\t" + OKAY_EMOJI + " Understood, sir. I've added this task: ");
         System.out.println("\t\t" + taskList[listIndex]);
         System.out.printf("\tYou currently have %d task(s) in your list, sir.%n", taskCount);
         printDivider();
@@ -164,9 +171,9 @@ public class Duke {
     public static void displayList(Task[] taskList) {
         printDivider();
         if (taskList[0] == null) {
-            System.out.println("\t" + Emojis.HURRAY_EMOJI + " You have no tasks recorded, sir. Huzzah!");
+            System.out.println("\t" + HURRAY_EMOJI + " You have no tasks recorded, sir. Huzzah!");
         } else {
-            System.out.println("\t" + Emojis.LIST_EMOJI + " Here are your tasks, sir: ");
+            System.out.println("\t" + LIST_EMOJI + " Here are your tasks, sir: ");
             for (int i = 0; i < taskCount; i++) {
                 System.out.printf("\t%d.", i + 1);
                 System.out.println(taskList[i]);
@@ -177,7 +184,7 @@ public class Duke {
 
     public static void printFarewell() {
         printDivider();
-        System.out.println("\t" + Emojis.SMILE_EMOJI + " Always a pleasure, sir. Do come back soon.");
+        System.out.println("\t" + SMILE_EMOJI + " Always a pleasure, sir. Do come back soon.");
         printDivider();
     }
 
@@ -192,7 +199,7 @@ public class Duke {
 
     public static void printGreeting() {
         printDivider();
-        System.out.println("\t" + Emojis.WAVE_EMOJI + " Greetings, sir. My name is Duke");
+        System.out.println("\t" + WAVE_EMOJI + " Greetings, sir. My name is duke.Duke");
         System.out.println("\tHow may I assist you today, sir?");
         printDivider();
     }
@@ -203,7 +210,7 @@ public class Duke {
 
     public static void printErrorMessage() {
         printDivider();
-        System.out.println("\t" + Emojis.CONFUSED_EMOJI + " I'm afraid I don't understand, sir. Please preface " +
+        System.out.println("\t" + CONFUSED_EMOJI + " I'm afraid I don't understand, sir. Please preface " +
                 "your tasks " + "\n\twith 'todo', 'deadline', or 'event' to add them to your list.");
         printDivider();
     }

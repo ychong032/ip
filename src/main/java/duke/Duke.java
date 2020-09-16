@@ -4,27 +4,106 @@ import duke.task.Task;
 import duke.task.Deadline;
 import duke.task.ToDo;
 import duke.task.Event;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Scanner;
+import java.io.FileWriter;
+import java.io.File;
 
 public class Duke {
     private static final int MAX_TASK_LENGTH = 100;
+    private static final String PATH = "data" + File.separator + "duke.txt";
     private static int taskCount = 0;
     private static int listIndex = 0;
+    private static final Task[] taskList = new Task[MAX_TASK_LENGTH];
 
     public static void main(String[] args) {
         //Print logo and opening message
+        try {
+            File dukeFile = createDukeFile();
+            readDukeFile(dukeFile);
+        } catch (FileNotFoundException e) {
+            System.out.println("\tduke.txt not found in /data folder!");
+            System.exit(-1);
+        } catch (IOException e) {
+            printIOEMessage();
+            System.exit(-1);
+        }
+
         printLogo();
         printGreeting();
 
         //Receive user input and execute corresponding functions
+
         getUserInput();
 
         //Print closing message
         printFarewell();
     }
 
+    public static File createDukeFile() throws IOException {
+        File dukeFile = new File(PATH);
+        if (!dukeFile.exists()) {
+            new File(dukeFile.getParent()).mkdirs();
+            dukeFile.createNewFile();
+        }
+        return dukeFile;
+    }
+
+    public static void readDukeFile(File dukeFile) throws FileNotFoundException {
+        Scanner sc = new Scanner(dukeFile);
+        String taskAsString;
+        String description;
+        while (sc.hasNext()) {
+            taskAsString = sc.nextLine();
+            if (taskAsString.contains("[T]")) {
+                readToDo(taskAsString);
+            } else if (taskAsString.contains("[D]")) {
+                readDeadline(taskAsString);
+            } else {
+                readEvent(taskAsString);
+            }
+            if (taskAsString.contains("\u2713")) {
+                taskList[listIndex].markAsDone();
+            }
+            listIndex++;
+            taskCount++;
+        }
+    }
+
+    public static void readEvent(String taskAsString) {
+        String description;
+        int atStartIndex = taskAsString.indexOf(" (at:") + " (at:".length();
+        int atEndIndex = taskAsString.lastIndexOf(")");
+        String at = taskAsString.substring(atStartIndex, atEndIndex);
+        description = taskAsString.substring(taskAsString.indexOf(" ") + 1, taskAsString.indexOf(" (at:"));
+        taskList[listIndex] = new Event(description, at);
+    }
+
+    public static void readDeadline(String taskAsString) {
+        String description;
+        int deadlineStartIndex = (taskAsString.indexOf(" (by:") + " (by:".length());
+        int deadlineEndIndex = taskAsString.lastIndexOf(")");
+        String deadline = taskAsString.substring(deadlineStartIndex, deadlineEndIndex);
+        description = taskAsString.substring(taskAsString.indexOf(" ") + 1, taskAsString.indexOf(" (by:"));
+        taskList[listIndex] = new Deadline(description, deadline);
+    }
+
+    public static void readToDo(String taskAsString) {
+        String description = taskAsString.substring(taskAsString.indexOf(" "));
+        taskList[listIndex] = new ToDo(description);
+    }
+
+    public static void writeToFile(Task[] taskList) throws IOException {
+        FileWriter dukeFile = new FileWriter("data/duke.txt");
+        for (int i = 0; i < taskCount; i++) {
+            dukeFile.write(taskList[i].toString() + "\n");
+        }
+        dukeFile.close();
+    }
+
     public static void getUserInput() {
-        Task[] taskList = new Task[MAX_TASK_LENGTH];
         Scanner sc = new Scanner(System.in);
         String userInput = sc.nextLine();
         while (!userInput.trim().toLowerCase().equals("bye")) {
@@ -45,16 +124,27 @@ public class Duke {
         }
     }
 
-    public static void markTaskDone(Task[] taskList, String userInput) {
+    private static void markTaskDone(Task[] taskList, String userInput) {
         try {
             Task taskDone = getCompletedTask(taskList, userInput);
             taskDone.markAsDone();
             printTaskDone(taskDone);
+            writeToFile(taskList);
         } catch (NumberFormatException e) {
             printNFEMessage();
         } catch (NullPointerException e) {
             printNPEMessage();
+        } catch (IOException e) {
+            printIOEMessage();
+            System.exit(1);
         }
+    }
+
+    public static void printIOEMessage() {
+        printDivider();
+        System.out.println("\tduke.txt does not exist in /data folder!");
+        System.out.println("\tTerminating Duke...");
+        printDivider();
     }
 
     public static void printNPEMessage() {
@@ -92,18 +182,24 @@ public class Duke {
             switch (taskType) {
             case "todo":
                 addToDoToList(taskList, replacedInput);
+                writeToFile(taskList);
                 break;
             case "deadline":
                 addDeadlineToList(taskList, replacedInput);
+                writeToFile(taskList);
                 break;
             case "event":
                 addEventToList(taskList, replacedInput);
+                writeToFile(taskList);
                 break;
             }
         } catch (StringIndexOutOfBoundsException e) {
             printSIOOBEMessage();
         } catch (DukeException e) {
             printDEMessage(taskType);
+        } catch (IOException e) {
+            printIOEMessage();
+            System.exit(1);
         }
     }
 
@@ -145,8 +241,11 @@ public class Duke {
             throw new DukeException();
         }
         int byIndex = replacedInput.toLowerCase().indexOf("/by");
-        String by = replacedInput.substring(byIndex + 3);
+        String by = replacedInput.substring(byIndex + "/by".length());
         String description = replacedInput.substring(0, byIndex);
+        if (description.isBlank()) {
+            description = "Unspecified task";
+        }
         taskList[listIndex] = new Deadline(description, by);
         taskCount++;
         printAddedTask(taskList);
@@ -159,8 +258,11 @@ public class Duke {
             throw new DukeException();
         }
         int atIndex = replacedInput.toLowerCase().indexOf("/at");
-        String at = replacedInput.substring(atIndex + 3);
+        String at = replacedInput.substring(atIndex + "/at".length());
         String description = replacedInput.substring(0, atIndex);
+        if (description.isBlank()) {
+            description = "Unspecified event";
+        }
         taskList[listIndex] = new Event(description, at);
         taskCount++;
         printAddedTask(taskList);
@@ -199,7 +301,7 @@ public class Duke {
 
     public static void printGreeting() {
         printDivider();
-        System.out.println("\t" + WAVE_EMOJI + " Greetings, sir. My name is duke.Duke");
+        System.out.println("\t" + WAVE_EMOJI + " Greetings, sir. My name is Duke");
         System.out.println("\tHow may I assist you today, sir?");
         printDivider();
     }

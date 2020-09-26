@@ -4,6 +4,7 @@ import duke.aesthetics.Emojis;
 import duke.task.Task;
 
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class Ui {
 
@@ -113,6 +114,23 @@ public class Ui {
         printDivider();
         System.out.println("\t" + Emojis.CONFUSED_EMOJI + " I'm afraid I don't understand, sir. Please preface " +
                 "your tasks " + "\n\twith 'todo', 'deadline', or 'event' to add them to your list.");
+        printDivider();
+    }
+
+    public void showSearchResults(ArrayList<Task> copyOfTasks, ArrayList<Task> tasks) {
+        printDivider();
+        if (copyOfTasks.isEmpty()) {
+            System.out.println("\tI could not find any matching tasks, sir. Please give me an existing" +
+                    "\n\tphrase to search for in your list.");
+        } else {
+            System.out.println("\tHere are the matching tasks in your list, sir: ");
+            for (Task task : copyOfTasks) {
+                if (tasks.contains(task)) {
+                    System.out.printf("\t%d.", tasks.indexOf(task) + 1);
+                    System.out.println(task);
+                }
+            }
+        }
         printDivider();
     }
 }

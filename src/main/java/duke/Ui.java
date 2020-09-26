@@ -115,4 +115,10 @@ public class Ui {
                 "your tasks " + "\n\twith 'todo', 'deadline', or 'event' to add them to your list.");
         printDivider();
     }
+
+    public void showDateInputError() {
+        printDivider();
+        System.out.println("\tPlease ensure that your date is in the correct format (YYYY-MM-DD).");
+        printDivider();
+    }
 }

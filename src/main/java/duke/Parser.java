@@ -12,6 +12,8 @@ public class Parser {
             return new DeleteCommand(fullCommand);
         } else if (trimmedCommand.contains("done")) {
             return new CompleteCommand(fullCommand);
+        } else if (trimmedCommand.contains("find")) {
+            return new FindCommand(fullCommand);
         } else if (trimmedCommand.equals("list")) {
             return new ListCommand(fullCommand);
         } else if (trimmedCommand.equals("bye")) {

@@ -4,6 +4,7 @@ import duke.aesthetics.Emojis;
 import duke.task.Task;
 
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class Ui {
 
@@ -119,6 +120,22 @@ public class Ui {
     public void showDateInputError() {
         printDivider();
         System.out.println("\tPlease ensure that your date is in the correct format (YYYY-MM-DD).");
+    }
+
+    public void showSearchResults(ArrayList<Task> copyOfTasks, ArrayList<Task> tasks) {
+        printDivider();
+        if (copyOfTasks.isEmpty()) {
+            System.out.println("\tI could not find any matching tasks, sir. Please give me an existing" +
+                    "\n\tphrase to search for in your list.");
+        } else {
+            System.out.println("\tHere are the matching tasks in your list, sir: ");
+            for (Task task : copyOfTasks) {
+                if (tasks.contains(task)) {
+                    System.out.printf("\t%d.", tasks.indexOf(task) + 1);
+                    System.out.println(task);
+                }
+            }
+        }
         printDivider();
     }
 }

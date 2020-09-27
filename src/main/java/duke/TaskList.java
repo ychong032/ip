@@ -98,6 +98,19 @@ public class TaskList {
         Duke.listIndex++;
     }
 
+    public ArrayList<Task> searchTasks(String fullCommand) {
+        String replacedInput = fullCommand.replaceFirst("(?i)" + "find", "").trim();
+        ArrayList<Task> copyOfTasks = new ArrayList<>();
+        if (!replacedInput.isBlank()) {
+            for (Task task : tasks) {
+                if (task.toString().toLowerCase().contains(replacedInput.toLowerCase())) {
+                    copyOfTasks.add(task);
+                }
+            }
+        }
+        return copyOfTasks;
+    }
+
     public ArrayList<Task> getTasks() {
         return tasks;
     }

@@ -1,5 +1,8 @@
 package duke.aesthetics;
 
+/**
+ * Contains several emojis that can be printed on the screen.
+ */
 public class Emojis {
     public static final String SAD_EMOJI = new String(Character.toChars(0x1f61e));
     public static final String CLAP_EMOJI = new String(Character.toChars(0x1f44f));

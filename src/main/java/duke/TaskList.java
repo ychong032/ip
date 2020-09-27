@@ -7,6 +7,9 @@ import duke.task.Task;
 import duke.task.ToDo;
 
 import java.util.ArrayList;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 public class TaskList {
     private ArrayList<Task> tasks;
@@ -39,7 +42,8 @@ public class TaskList {
         return tasks.get(taskNumber - 1);
     }
 
-    public void addToList(String fullCommand, String taskType) throws DukeEmptyDescriptionException {
+    public void addToList(String fullCommand, String taskType) throws DukeEmptyDescriptionException,
+            DateTimeParseException {
         String replacedInput = fullCommand.replaceFirst("(?i)" + taskType, "").trim();
         switch (taskType) {
         case "todo":
@@ -63,17 +67,19 @@ public class TaskList {
     }
 
     public void addDeadlineToList(String replacedInput) throws StringIndexOutOfBoundsException,
-            DukeEmptyDescriptionException {
+            DukeEmptyDescriptionException, DateTimeParseException {
         if (replacedInput.isBlank()) {
             throw new DukeEmptyDescriptionException();
         }
         int byIndex = replacedInput.indexOf("/by");
         String by = replacedInput.substring(byIndex + "/by".length()).trim();
+        LocalDate deadlineDate = LocalDate.parse(by);
+        String deadlineString = deadlineDate.format(DateTimeFormatter.ofPattern("MMM d yyyy"));
         String description = replacedInput.substring(0, byIndex).trim();
         if (description.isBlank()) {
             description = "Unspecified task";
         }
-        tasks.add(new Deadline(description, by));
+        tasks.add(new Deadline(description, deadlineString));
         Duke.listIndex++;
     }
 

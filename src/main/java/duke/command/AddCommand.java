@@ -1,9 +1,12 @@
 package duke.command;
 
-import duke.*;
+import duke.TaskList;
+import duke.Ui;
+import duke.Storage;
 import duke.exception.DukeEmptyDescriptionException;
 
 import java.io.IOException;
+import java.time.format.DateTimeParseException;
 
 public class AddCommand extends Command {
     private String taskType;
@@ -22,8 +25,12 @@ public class AddCommand extends Command {
 
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) throws DukeEmptyDescriptionException, IOException {
-        tasks.addToList(fullCommand, taskType);
-        ui.showAddedTask(tasks);
-        storage.writeToFile();
+        try {
+            tasks.addToList(fullCommand, taskType);
+            ui.showAddedTask(tasks);
+            storage.writeToFile();
+        } catch (DateTimeParseException e) {
+            ui.showDateInputError();
+        }
     }
 }

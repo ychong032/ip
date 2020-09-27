@@ -7,13 +7,32 @@ import duke.exception.DukeUnknownInputException;
 import java.io.IOException;
 import java.io.File;
 
+/**
+ * <h1>Duke</h1>
+ * The Duke program accepts user inputs to add and store different types of tasks in a list.
+ * Users can also search for tasks, mark them as completed, delete them, or display the current
+ * list of tasks. Whenever changes are made to the task list, the text file used for storing the
+ * task list is updated. Upon termination of the Duke program, the task list will be retained
+ * in this text file. When the Duke program is run again, the same task list will be loaded from
+ * this file.
+ *
+ * @author Chong Yow Lim
+ * @since 2020-08-14
+ */
 public class Duke {
+    // Represents the index position of the most recently added task in the task list.
+    // This is used for getting tasks from a file.
     protected static int listIndex = 0;
     private static final String PATH = "data" + File.separator + "duke.txt";
     private TaskList tasks;
     private Storage storage;
     private Ui ui;
 
+    /**
+     * Constructs a <code>Duke</code> object given a file path.
+     * Reads data from the file used for storage of the task list into a new <code>TaskList</code>.
+     * @param filePath the file path of the storage file.
+     */
     public Duke(String filePath) {
         ui = new Ui();
         storage = new Storage(filePath);
@@ -25,6 +44,12 @@ public class Duke {
         }
     }
 
+    /**
+     * Runs the Duke program and prints various exception messages. User input is
+     * read and used to instantiate a <code>Command</code> object. This object performs different
+     * operations depending on keywords detected in the user input. The method ends when the
+     * <code>Command</code> object is an <code>ExitCommand</code>.
+     */
     public void run() {
         ui.printLogo();
         ui.printGreeting();

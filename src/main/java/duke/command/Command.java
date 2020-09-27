@@ -7,6 +7,9 @@ import duke.Ui;
 
 import java.io.IOException;
 
+/**
+ * An abstract class for executing different commands in the Duke program.
+ */
 public abstract class Command {
     protected String fullCommand;
     protected boolean isExit;

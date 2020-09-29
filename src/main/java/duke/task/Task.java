@@ -18,12 +18,12 @@ public class Task {
     }
 
     /**
-     * Returns the task's status icon, which represents the status of completion. A tick symbol
-     * is for completed tasks, while a cross is for uncompleted tasks.
+     * Returns the task's status icon, which represents the status of completion. The number 1
+     * is for completed tasks, while a zero is for uncompleted tasks.
      * @return the status icon of the task as a String.
      */
     public String getStatusIcon() {
-        return (isDone ? "\u2713" : "\u2718");
+        return (isDone ? "1" : "0");
     }
 
     /**
